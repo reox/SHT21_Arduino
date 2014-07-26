@@ -64,20 +64,35 @@ uint16_t SHT2xClass::readSensor(uint8_t command)
 {
     uint16_t result;
 
+    Serial.println("==========");
     Wire.beginTransmission(eSHT2xAddress);	//begin
+    Serial.println(eSHT2xAddress);
+    Serial.println("After beginTransmission");
     Wire.write(command);					//send the pointer location
-    delay(100);
+    Serial.println(command);
+    Serial.println("After write");
     Wire.endTransmission();               	//end
+    Serial.println("After End Transmission");
 
     Wire.requestFrom(eSHT2xAddress, 3);
+    Serial.println("After Request");
+    delay(100);
+    Serial.println("After delay");
     while(Wire.available() < 3) {
       ; //wait
     }
+    Serial.println(Wire.available());
+    Serial.println("After Available");
 
     //Store the result
     result = ((Wire.read()) << 8);
+    Serial.println("After read");
     result += Wire.read();
+    Serial.println("After second read");
 	result &= ~0x0003;   // clear two low bits (status bits)
+    uint8_t crc = Wire.read();
+    Serial.println(result);
+    Serial.println("=== END ===");
     return result;
 }
 
